@@ -1,8 +1,11 @@
 provider "azurerm" {
   features {}
+ 
 }
 
-provider "azapi" {}
+provider "azapi" {
+ 
+}
 
 terraform {
   required_version = ">= 1.3.4"
@@ -127,7 +130,7 @@ module "complete_infrastructure" {
   // Use this collection to assign users to each one of the roles defined in the role_templates collection
   group_assignments = {
     infra_admin = [
-      { type = "user", objectid = "c6645ac2-f43a-4b6b-9e25-2dfb7d2ee64b", name = "Admin User" }
+      { type = "user", objectid = "a1234567-89ab-cdef-0123-456789abcdef", name = "Admin User" }
     ]
   }
 
@@ -152,6 +155,3 @@ module "complete_infrastructure" {
   core_config      = local.core_config
 }
 
-output "identity_group_assignments" {
-  value = module.complete_infrastructure.identity_group_assignments
-}

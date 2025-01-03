@@ -1,213 +1,202 @@
-# terraform-azurerm-avm-ptn-ai-foundry-enterprise
+# terraform-azurerm-avm-ptn-ai-foundry-enterprise (in progress)
 
-The `avm-ptn-ai-foundry-enterprise` is a comprehensive Terraform module designed to facilitate enterprise-scale AI deployments on Microsoft Azure. As an opinionated module, it addresses critical infrastructure components—including security, networking, AI services, and identity management—providing a robust foundation for Azure AI Foundry initiatives. Azure AI Foundry is a set of capabilities designed to streamline the development and deployment of AI solutions at an enterprise scale. It offers a structured framework to manage the lifecycle of AI models, integrates seamlessly with data services, and leverages the power of Azure's AI and machine learning services.
+The `terraform-azurerm-avm-ptn-ai-foundry-enterprise` is a comprehensive Terraform module intended for enterprise-scale AI deployments on Microsoft Azure. This module is built to support Azure AI Foundry, an extensive platform that simplifies the creation, management, and scaling of AI-driven applications.
 
-With Azure AI Foundry, enterprises can accelerate AI solution development and deployment while taking full advantage of Azure AI services like Cognitive Services, Machine Learning, and more. The objective of this module is to deploy an enterprise-ready AI Foundry platform that ensures scalability, security, and operational efficiency. Additionally, it is compatible with Azure Landing Zones, allowing seamless integration as part of a broader application landing zone strategy.
+Azure AI Foundry serves as a central hub for managing AI projects, offering tools for building, testing, and deploying AI applications efficiently. It provides robust configuration options, enabling you to manage security, connectivity, and resources through a unified interface.
 
+## Features
 
-## Why Use this Module for AI Foundry Enterprise Deployments?
-
-This module is particularly useful for AI Foundry enterprise deployments because it:
-
-1. **Enhances Security**: Implements comprehensive security measures, including network isolation, private endpoints, identity management, and key vault integrations, ensuring that sensitive AI processes and data are protected against unauthorized access.
-
-2. **Scalability**: Supports enterprise-grade deployments with scalable resources, allowing organizations to efficiently manage extensive AI workloads while preparing for future growth.
-
-3. **Operational Efficiency**: Reduces setup time through predefined, opinionated end to end configurations, enabling faster deployment of infrastructure and services required for AI Foundry.
-
-4. **Flexibility and Compliance**: Offers customizable options that align with diverse enterprise needs and comply with regulatory standards using managed access controls and automated role assignments.
-
-5. **Integration**: Fits seamlessly into an Azure Landing Zone strategy, providing a cohesive cloud infrastructure deployment framework tailored for AI workloads, which helps in easy integration into broader cloud strategies.
-
-6. **Networking and Identity Management**: Streamlines the deployment of complex networking architectures and identity management systems, ensuring efficient connectivity and access control.
-
-This module implements the architecture as described in the [Azure AI Studio End-to-End Baseline Architecture](https://github.com/Azure-Samples/aistudio-end-to-end-baseline-architecture).
+- **Integrated AI Hub**: The AI Hub is a core component of Azure AI Foundry that centralizes project management, enabling collaborative development and efficient resource allocation.
+- **Security and Compliance**: Includes network isolation, role-based access control (RBAC), and integration with Azure Key Vault for secure handling of sensitive data.
+- **Scalability and Performance**: Designed to handle extensive AI workloads, ensuring robust performance and future growth readiness.
+- **Operational Efficiency**: Accelerates deployment through predefined configurations and integrations with Azure services.
+- **Networking and Identity Management**: Streamlines deployment of networking and identity resources for efficient access control.
+- **Azure Integration**: Seamless integration with Azure services such as Azure Container Registry, Azure Cognitive Services, and Azure Storage.
 
 ## Key Components
 
-### Jumpbox Configuration
-- **Purpose**: Acts as a secure bridge to the Azure environment by deploying a Windows-based jump box with isolated permissions.
-- **Details**:
-  - Configurable VM parameters, such as admin credentials and VM sizing.
-  - Implements Azure Bastion for enhanced security and seamless access.
-  - Network isolation via private IP setup.
-
 ### Networking Architecture
-- **Purpose**: Establishes a secure and scalable network using Azure VNet, incorporating subnets, NSGs, private endpoints, and automated connectivity.
-- **Details**:
-  - Subnet configurations include app services, gateways, and additional environments.
-  - Implements NSGs to manage traffic with detailed security rules.
-  - Incorporates DDoS protection for enhanced security.
+- Establishes a secure and scalable network environment utilizing Azure Virtual Network (VNet), Network Security Groups (NSGs), and private DNS zones.
 
-### AI Services Integration
-- **Purpose**: Deploys advanced AI capabilities such as Azure Cognitive Services and Machine Learning, fostering AI-driven applications.
-- **Details**:
-  - Uses `azapi_resource` for creating AI hubs and projects.
-  - Configures private endpoints for AI services to maintain privacy and security.
-  - Customizable SKUs for resource optimization.
+### AI Services
+- Integrates advanced AI capabilities including Azure Cognitive Services and Azure Machine Learning for building AI-driven applications.
 
-### Identity and Access Management (IAM)
-- **Purpose**: Automates RBAC, ensuring authorized access to resources, making it simple to implement user personas and roles.
-- **Details**:
-  - Employs `azurerm_role_assignment` for dynamic role assignments.
-  - Utilizes managed identities for accessing resources such as AI Search and OpenAI.
-  - Define user groups and assign permissions.
+### Jumpbox Configuration
+- Configures a secure Windows-based jumpbox using Azure Bastion for enhanced security and easy administration.
+
+### Identity and Access Management
+- Automates RBAC to ensure proper access management across all Azure resources.
 
 ### Storage Solutions
-- **Purpose**: Provides secure and scalable storage tailored for AI workloads.
-- **Details**:
-  - Azure Storage Accounts with private endpoints for blob and file storage.
-  - Enforces secure data transactions with network rule sets.
-  - High availability through zone redundancy.
+- Configures Azure Storage with private endpoints to maintain data integrity and privacy.
 
-### Key Management and Security
-- **Purpose**: Utilizes Azure Key Vault to securely store sensitive data, such as API keys.
-- **Details**:
-  - Sets up Key Vault access policies and role assignments.
-  - Supports optional private DNS and endpoint configurations.
+### Key Vault Management
+- Employs Azure Key Vault for secure management of secrets and sensitive information.
 
-### DNS and Private Networking
-- **Purpose**: Offers private DNS zones to manage internal domain names securely for services.
-- **Details**:
-  - Establishes private DNS zones linked with VNets.
-  - Supports conditional DNS management for scalability.
+### AI Hub Integration
+- AI Hub within Azure AI Foundry provides a centralized management platform for AI projects, allowing for rapid prototyping, building, and deployment of AI solutions. It automates resource orchestration and simplifies security management across AI environments.
 
-### AI Landing Zone Compatibility
-- **Purpose**: Easily integrates with AI Landing Zones for a cohesive application landing zone strategy.
-- **Details**:
-  - Enables seamless deployment within enterprise application strategies.
-  - Establishes a consistent framework for cloud resources tailored to AI workloads.
+## Example Deployment
 
-### Shared Private Links
-- **Purpose**: Implements Shared PrivateLinks to allow for private indexing of data using AI Search.
-- **Details**:
-  - Facilitates secure data access and indexing, enhancing data privacy and access control.
-  - Supports AI-driven data queries and indexing in a private, secure network context.
+The following is an example configuration setup that demonstrates how to configure this Terraform module in your Azure environment. Adjust configurations to meet your specific requirements.
 
-## Ownership
-- **Module Owner**: [FreddyAyala](https://github.com/FreddyAyala)
+```hcl
+provider "azurerm" {
+  features {}
+}
 
-The module can be deployed as a layer and is considered an AI Landing Zone. It can be deployed standalone or as part of landing zones to be integrated into the platform landing zone.
+provider "azapi" {}
+
+terraform {
+  required_version = ">= 1.3.4"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "4.11.0"
+    }
+    azapi = {
+      source  = "azure/azapi"
+      version = ">= 2.2.0"
+    }
+  }
+
+  backend "local" {
+    path = "terraform.tfstate"
+  }
+}
+
+resource "random_id" "short_name" {
+  byte_length = 4
+}
+
+locals {
+  development_environment = true
+  base_name               = "${random_id.short_name.hex}${random_id.short_name.dec}"
+  location                = "swedencentral"
+  tags                    = { "Environment" = "development", "Owner" = "team" }
+  
+  search_config = {
+    private_dns_zone_ids       = []
+    tags                       = {}
+    sku_name                   = "standard"
+    disable_local_auth         = true
+    hosting_mode               = "default"
+    public_network_access      = "disabled"
+    partition_count            = 1
+    replica_count              = 1
+    semantic_search            = "disabled"
+    search_identity_provider   = { type = "None" }
+    deploy_shared_private_link = true
+    deploy_private_dns_zones   = true
+  }
+
+  network = {
+    base_name                       = "network-base"
+    development_environment         = local.development_environment
+    vnet_address_prefix             = "10.0.0.0/16"
+    app_gateway_subnet_prefix       = "10.0.1.0/24"
+    private_endpoints_subnet_prefix = "10.0.2.0/27"
+    agents_subnet_prefix            = "10.0.2.32/27"
+    bastion_subnet_prefix           = "10.0.2.64/26"
+    jumpbox_subnet_prefix           = "10.0.2.128/28"
+    training_subnet_prefix          = "10.0.3.0/24"
+    scoring_subnet_prefix           = "10.0.4.0/24"
+    app_services_subnet_prefix      = "10.0.5.0/24"
+  }
+  
+  aiservice_config = {
+    private_dns_zone_ids     = []
+    aiServiceSkuName         = "S0"
+    base_name                = local.base_name
+    disableLocalAuth         = false
+    deploy_private_dns_zones = true
+  }
+  
+  core_config = {
+    acr = {
+      private_dns_zone_ids   = []
+      deploy_acr_private_dns = true
+    }
+    storage = {
+      private_dns_zone_ids       = []
+      deploy_storage_private_dns = true
+    }
+    key_vault = {
+      private_dns_zone_ids       = []
+      deploy_storage_private_dns = true
+    }
+    ai_hub = {
+      private_dns_zone_ids = []
+      tags                 = local.tags
+      deploy_private_dns   = true
+      description          = "AI Hub"
+    }
+  }
+}
+
+module "complete_infrastructure" {
+  source = "../../"
+  base_name               = local.base_name
+  location                = local.location
+  tags                    = local.tags
+  development_environment = local.development_environment
+
+  role_templates = {
+    infra_admin = [
+      { role_name = "contributor", scope = "resource_group_id" },
+      { role_name = "azure_ai_administrator", scope = "resource_group_id" },
+      { role_name = "search_index_data_contributor", scope = "ai_search_service_id" },
+      { role_name = "cognitive_services_openai_user", scope = "openai_embedding_id" },
+      { role_name = "cognitive_services_openai_contributor", scope = "openai_chat_id" },
+      { role_name = "search_service_contributor", scope = "ai_search_service_id" },
+      { role_name = "storage_blob_data_contributor", scope = "storage_account_id" },
+      { role_name = "storage_file_data_privileged_contributor", scope = "storage_account_id" }
+    ]
+    ai_admin = [
+      { role_name = "owner", scope = "ai_hub_id" },
+      { role_name = "azure_ai_administrator", scope = "resource_group_id" },
+      { role_name = "search_index_data_contributor", scope = "ai_search_service_id" },
+      { role_name = "search_service_contributor", scope = "ai_search_service_id" },
+      { role_name = "cognitive_services_openai_contributor", scope = "openai_chat_id" },
+      { role_name = "cognitive_services_openai_user", scope = "openai_embedding_id" },
+      { role_name = "storage_blob_data_contributor", scope = "storage_account_id" },
+      { role_name = "storage_file_data_privileged_contributor", scope = "storage_account_id" }
+    ]
+  }
+
+  group_assignments = {
+    infra_admin = [
+      { type = "user", objectid = "a1234567-89ab-cdef-0123-456789abcdef", name = "Admin User" }
+    ]
+  }
+
+  deployment_config = {
+    deploy_network  = true
+    deploy_services = true
+    deploy_core     = true
+    deploy_identity = true
+    deploy_shared   = true
+  }
+
+  extra_shared_private_links = []
+  extra_ai_hub_outbound_rules = {}
+  search_config    = local.search_config
+  aiservice_config = local.aiservice_config
+  core_config      = local.core_config
+}
+```
 
 ## Requirements
 
-The following requirements are needed by this module:
+- **Terraform Version**: `>= 1.3.4`
+- **AzureRM Provider**: `4.11.0` or later
+- **AzAPI Provider**: `Azure/azapi`
 
-### Terraform
-- **Version**: `>= 1.3.4`
+This module can be deployed standalone or integrated into an Azure Landing Zone strategy, offering a flexible and secure foundation for AI initiatives on Azure.
 
-### Providers
-- **AzureRM Provider**
-  - **Source**: `hashicorp/azurerm`
-  - **Version**: `4.11.0`
-- **AzAPI Provider**
-  - **Source**: `azure/azapi`
+## License
 
-## Resources
+MIT License
 
-The following resources and modules are used by this module:
-
-- `azurerm_resource_group.rg` (resource)
-- `data.azurerm_resource_group.existing_rg` (data source)
-
-### Conditioned Modules
-
-- `module.ai_foundry_services` (conditional)
-- `module.ai_foundry_core` (conditional)
-- `module.ai_foundry_identity` (conditional)
-- `module.ai_foundry_shared` (conditional)
-
-## Required Inputs
-
-The following input variables are required:
-
-- **base_name**
-  - Description: The base name for each Azure resource name.
-  - Type: `string`
-
-- **location**
-  - Description: The resource group location.
-  - Type: `string`
-  - Default: `"East US"`
-
-## Optional Inputs
-
-The following input variables are optional and have default values:
-
-- **tags**
-  - Description: Map of tags to add to resources.
-  - Type: `map(string)`
-  - Default: `{}`
-
-- **use_existing_rg**
-  - Description: Flag to determine if an existing resource group should be used.
-  - Type: `bool`
-  - Default: `false`
-
-- **existing_rg_name**
-  - Description: Name of the existing resource group to use.
-  - Type: `string`
-  - Default: `""`
-
-- **deploy_network**
-  - Description: Flag to deploy network resources.
-  - Type: `bool`
-  - Default: `true`
-
-- **role_templates**
-  - Description: Templates for role assignments.
-  - Type: `map(list(object))`
-  - Default: `{ infra_admin: [...], ai_admin: [...] }`
-
-- **network**
-  - Description: Network configuration.
-  - Type: `object`
-  - Default configuration includes prefix settings for subnets.
-
-- **deployment_config**
-  - Description: Configuration to choose which layers to deploy.
-  - Type: `object`
-  - Default: `{ deploy_services: false, deploy_core: false, deploy_identity: false, deploy_shared: false }`
-
-- **search_config**
-  - Description: Configuration for the search service.
-  - Type: `object`
-  - Default: `{ ... }`
-
-- **aiservice_config**
-  - Description: Configuration for the AI service.
-  - Type: `object`
-  - Default: `{ ... }`
-
-- **core_config**
-  - Description: Configuration for ai-foundry-core module.
-  - Type: `object`
-  - Default: `{ ... }`
-
-- Other variables related to network, principals, and role management.
-
-## Outputs
-
-The following outputs are exported:
-
-- Outputs related to AI Hub, AI Services, and storage resources identifiers and states.
-
-## Modules
-
-The following sub-modules are called:
-
-- **ai_foundry_services**
-  - Source: `./modules/ai-foundry-services`
-
-- **ai_foundry_core**
-  - Source: `./modules/ai-foundry-core`
-
-- **ai_foundry_identity**
-  - Source: `./modules/ai-foundry-identity`
-
-- **ai_foundry_shared**
-  - Source: `./modules/ai-foundry-shared-resources`
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You can learn more about data collection and use in the [privacy statement](https://go.microsoft.com/fwlink/?LinkID=824704). Your use of the software operates as your consent to these practices.
+This README contextualizes the role of the AI Hub within Azure AI Foundry and captures the functionalities as described in the accompanying code segments.
