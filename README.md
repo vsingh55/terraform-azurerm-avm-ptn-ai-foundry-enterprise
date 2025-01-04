@@ -1,8 +1,16 @@
 # terraform-azurerm-avm-ptn-ai-foundry-enterprise (in progress)
+ 
+
 
 The `terraform-azurerm-avm-ptn-ai-foundry-enterprise` is a comprehensive Terraform module intended for enterprise-scale AI deployments on Microsoft Azure. This module is built to support Azure AI Foundry, an extensive platform that simplifies the creation, management, and scaling of AI-driven applications.
 
 Azure AI Foundry serves as a central hub for managing AI projects, offering tools for building, testing, and deploying AI applications efficiently. It provides robust configuration options, enabling you to manage security, connectivity, and resources through a unified interface.
+
+## Architecture 
+
+![AI Foundry Architecture](./media/ai-foundry-architecture.png)
+
+This architecture is inspired by the [Azure AI Foundry End-to-End Baseline Architecture](https://github.com/Azure-Samples/aistudio-end-to-end-baseline-architecture/tree/main). For a more detailed deep dive into the security and architecture, please refer to the [Security Deep Dive](https://github.com/Azure-Samples/aistudio-end-to-end-baseline-architecture/blob/main/SECURITY_DEEP_DIVE.md).
 
 ## Features
 
@@ -12,6 +20,7 @@ Azure AI Foundry serves as a central hub for managing AI projects, offering tool
 - **Operational Efficiency**: Accelerates deployment through predefined configurations and integrations with Azure services.
 - **Networking and Identity Management**: Streamlines deployment of networking and identity resources for efficient access control.
 - **Azure Integration**: Seamless integration with Azure services such as Azure Container Registry, Azure Cognitive Services, and Azure Storage.
+- **Modular Deployment**: This module allows you to selectively deploy different layers based on your requirements, considering the dependencies between them. Deploying all layers provides an end-to-end solution with security best practices, including network isolation, managed identities, and RBAC access control. Alternatively, you can choose not to deploy the identity layer and customize the example module to fit your needs. Additionally, the entire solution can be deployed into an existing VNET, facilitating seamless integration into an Azure Landing Zones.
 
 ## Key Components
 
@@ -194,6 +203,8 @@ module "complete_infrastructure" {
 - **AzAPI Provider**: `Azure/azapi`
 
 This module can be deployed standalone or integrated into an Azure Landing Zone strategy, offering a flexible and secure foundation for AI initiatives on Azure.
+
+
 
 ## License
 

@@ -36,3 +36,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 modules/ai-foundry-identity/rbac copy
+concatenated_output.txt
+output.txt
