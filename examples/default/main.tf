@@ -1,60 +1,11 @@
-# terraform-azurerm-avm-ptn-ai-foundry-enterprise (in progress)
- 
-
-
-The `terraform-azurerm-avm-ptn-ai-foundry-enterprise` is a comprehensive Terraform module intended for enterprise-scale AI deployments on Microsoft Azure. This module is built to support Azure AI Foundry, an extensive platform that simplifies the creation, management, and scaling of AI-driven applications.
-
-Azure AI Foundry serves as a central hub for managing AI projects, offering tools for building, testing, and deploying AI applications efficiently. It provides robust configuration options, enabling you to manage security, connectivity, and resources through a unified interface.
-
-## Architecture 
-
-![AI Foundry Architecture](./media/ai-foundry-architecture.png)
-
-This architecture is inspired by the [Azure AI Foundry End-to-End Baseline Architecture](https://github.com/Azure-Samples/aistudio-end-to-end-baseline-architecture/tree/main). For a more detailed deep dive into the security and architecture, please refer to the [Security Deep Dive](https://github.com/Azure-Samples/aistudio-end-to-end-baseline-architecture/blob/main/SECURITY_DEEP_DIVE.md).
-
-## Features
-
-- **Integrated AI Hub**: The AI Hub is a core component of Azure AI Foundry that centralizes project management, enabling collaborative development and efficient resource allocation.
-- **Security and Compliance**: Includes network isolation, role-based access control (RBAC), and integration with Azure Key Vault for secure handling of sensitive data.
-- **Scalability and Performance**: Designed to handle extensive AI workloads, ensuring robust performance and future growth readiness.
-- **Operational Efficiency**: Accelerates deployment through predefined configurations and integrations with Azure services.
-- **Networking and Identity Management**: Streamlines deployment of networking and identity resources for efficient access control.
-- **Azure Integration**: Seamless integration with Azure services such as Azure Container Registry, Azure Cognitive Services, and Azure Storage.
-- **Modular Deployment**: This module allows you to selectively deploy different layers based on your requirements, considering the dependencies between them. Deploying all layers provides an end-to-end solution with security best practices, including network isolation, managed identities, and RBAC access control. Alternatively, you can choose not to deploy the identity layer and customize the example module to fit your needs. Additionally, the entire solution can be deployed into an existing VNET, facilitating seamless integration into an Azure Landing Zones.
-
-## Key Components
-
-### Networking Architecture
-- Establishes a secure and scalable network environment utilizing Azure Virtual Network (VNet), Network Security Groups (NSGs), and private DNS zones.
-
-### AI Services
-- Integrates advanced AI capabilities including Azure Cognitive Services and Azure Machine Learning for building AI-driven applications.
-
-### Jumpbox Configuration
-- Configures a secure Windows-based jumpbox using Azure Bastion for enhanced security and easy administration.
-
-### Identity and Access Management
-- Automates RBAC to ensure proper access management across all Azure resources.
-
-### Storage Solutions
-- Configures Azure Storage with private endpoints to maintain data integrity and privacy.
-
-### Key Vault Management
-- Employs Azure Key Vault for secure management of secrets and sensitive information.
-
-### AI Hub Integration
-- AI Hub within Azure AI Foundry provides a centralized management platform for AI projects, allowing for rapid prototyping, building, and deployment of AI solutions. It automates resource orchestration and simplifies security management across AI environments.
-
-## Example Deployment
-
-The following is an example configuration setup that demonstrates how to configure this Terraform module in your Azure environment. Adjust configurations to meet your specific requirements.
-
-```hcl
 provider "azurerm" {
   features {}
+ 
 }
 
-provider "azapi" {}
+provider "azapi" {
+ 
+}
 
 terraform {
   required_version = ">= 1.3.4"
@@ -62,7 +13,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.11.0"
+      version = ">= 4.11.0"
     }
     azapi = {
       source  = "azure/azapi"
@@ -84,7 +35,7 @@ locals {
   base_name               = "${random_id.short_name.hex}${random_id.short_name.dec}"
   location                = "swedencentral"
   tags                    = { "Environment" = "development", "Owner" = "team" }
-  
+
   search_config = {
     private_dns_zone_ids       = []
     tags                       = {}
@@ -113,7 +64,7 @@ locals {
     scoring_subnet_prefix           = "10.0.4.0/24"
     app_services_subnet_prefix      = "10.0.5.0/24"
   }
-  
+
   aiservice_config = {
     private_dns_zone_ids     = []
     aiServiceSkuName         = "S0"
@@ -121,7 +72,7 @@ locals {
     disableLocalAuth         = false
     deploy_private_dns_zones = true
   }
-  
+
   core_config = {
     acr = {
       private_dns_zone_ids   = []
@@ -146,11 +97,13 @@ locals {
 
 module "complete_infrastructure" {
   source = "../../"
+
   base_name               = local.base_name
   location                = local.location
   tags                    = local.tags
   development_environment = local.development_environment
 
+  // use this collection to define the role templates for the different groups
   role_templates = {
     infra_admin = [
       { role_name = "contributor", scope = "resource_group_id" },
@@ -174,12 +127,16 @@ module "complete_infrastructure" {
     ]
   }
 
+  // Use this collection to assign users to each one of the roles defined in the role_templates collection
   group_assignments = {
     infra_admin = [
       { type = "user", objectid = "a1234567-89ab-cdef-0123-456789abcdef", name = "Admin User" }
     ]
   }
 
+  // Use this configuration to define which layer to deploy, you can also choose to deploy only an specific layer
+  // Be aware that the layers are dependent on each other, so if you choose to deploy only one layer, 
+  // you will need to provide the required information for the other layers
   deployment_config = {
     deploy_network  = true
     deploy_services = true
@@ -188,26 +145,13 @@ module "complete_infrastructure" {
     deploy_shared   = true
   }
 
+  // you can add extra shared private links to the shared resources module
   extra_shared_private_links = []
+  // you can add extra outbound rules to the ai hub module
   extra_ai_hub_outbound_rules = {}
+  // this is the configureation for the core, search and ai services
   search_config    = local.search_config
   aiservice_config = local.aiservice_config
   core_config      = local.core_config
 }
-```
 
-## Requirements
-
-- **Terraform Version**: `>= 1.3.4`
-- **AzureRM Provider**: `4.11.0` or later
-- **AzAPI Provider**: `Azure/azapi`
-
-This module can be deployed standalone or integrated into an Azure Landing Zone strategy, offering a flexible and secure foundation for AI initiatives on Azure.
-
-
-
-## License
-
-MIT License
-
-This README contextualizes the role of the AI Hub within Azure AI Foundry and captures the functionalities as described in the accompanying code segments.
